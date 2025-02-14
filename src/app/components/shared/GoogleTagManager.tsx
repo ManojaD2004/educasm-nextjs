@@ -1,18 +1,20 @@
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 export const GoogleTagManager = () => {
-  const location = useLocation();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     // Push the new route to dataLayer
-    if (window.dataLayer) {
-      window.dataLayer.push({
-        event: 'pageview',
-        page: location.pathname + location.search
+    if (window?.dataLayer) {
+      window?.dataLayer.push({
+        event: "pageview",
+        page: pathname + searchParams.toString(),
       });
     }
   }, [location]);
 
   return null;
-}; 
+};

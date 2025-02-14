@@ -5,7 +5,7 @@ import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { SearchBar } from '../shared/SearchBar';
-import { GPTService } from '../../services/gptService';
+import { gptService as gptServiceInstance } from "../../services/gptService";
 import { MarkdownComponentProps } from '../../types';
 import { RelatedTopics } from './RelatedTopics';
 import { RelatedQuestions } from './RelatedQuestions';
@@ -65,7 +65,7 @@ const MarkdownComponents: Record<string, React.FC<MarkdownComponentProps>> = {
     </h3>
   ),
   p: ({ children, ...props }) => (
-    <p className="text-sm sm:text-base text-gray-300 my-1.5 leading-relaxed 
+    <p className="text-sm sm:text-base text-left text-gray-300 my-1.5 leading-relaxed 
       break-words" {...props}>
       {children}
     </p>
@@ -170,7 +170,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [showInitialSearch, setShowInitialSearch] = useState(!initialQuery);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const gptService = useMemo(() => new GPTService(), []);
+  const gptService = useMemo(() => gptServiceInstance, []);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -341,7 +341,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
                             components={{
                               ...MarkdownComponents,
                               p: ({ children }) => (
-                                <p className="text-sm sm:text-base text-gray-300 my-1.5 leading-relaxed 
+                                <p className="text-sm sm:text-base text-left text-gray-300 my-1.5 leading-relaxed 
                                   break-words">
                                   {children}
                                 </p>

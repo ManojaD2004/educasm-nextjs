@@ -23,37 +23,8 @@ export const useApi = () => {
     }
   };
 
-  const generateTest = async (topic: string, examType: 'JEE' | 'NEET') => {
-    setIsLoading(true);
-    try {
-      console.log('Generating test for:', { topic, examType });
-      const questions = await api.generateTest(topic, examType);
-      console.log('API response:', questions);
-      return questions;
-    } catch (err) {
-      console.error('Test Generation Error:', err);
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const explore = async (query: string, userContext: UserContext) => {
-    setIsLoading(true);
-    try {
-      return await api.explore(query, userContext);
-    } catch (err) {
-      console.error("API Error:", err);
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return {
     isLoading,
-    explore,
     getQuestion,
-    generateTest,
   };
 };

@@ -1,14 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Layout } from "./components/Layout/Layout";
-import { ExploreView } from "./components/Explore/ExploreView";
+import { Layout } from "../components/Layout/Layout";
+import { PlaygroundView } from "../components/Playground/PlaygroundView";
 // import { TestView } from './components/Test/TestView';
-import { PreFillForm } from "./components/shared/PreFillForm";
-import { UserContext } from "./types";
+import { PreFillForm } from "../components/shared/PreFillForm";
+import { UserContext } from "../types";
 import { Toaster, toast } from "react-hot-toast";
-import { GoogleTagManager } from "./components/shared/GoogleTagManager";
-import LoadGoogleAdsIframe from "./components/LoadGoogleAdsIframe";
-import LoadGoogleTagManager from "./components/LoadGoogleTagManager";
+import { GoogleTagManager } from "../components/shared/GoogleTagManager";
+import LoadGoogleAdsIframe from "../components/LoadGoogleAdsIframe";
+import LoadGoogleTagManager from "../components/LoadGoogleTagManager";
 
 export default function Home() {
   const [userContext, setUserContext] = useState<UserContext | null>(null);
@@ -23,9 +23,12 @@ export default function Home() {
       setUserContext(userContext);
     }
   }, [age]);
-
   const handleError = (message: string) => {
     toast.error(message);
+  };
+
+  const handleSuccess = (message: string) => {
+    toast.success(message);
   };
 
   if (!userContext) {
@@ -48,7 +51,11 @@ export default function Home() {
       <div className="min-h-screen bg-background text-white">
         <Toaster position="top-right" />
         <Layout>
-          <ExploreView onError={handleError} userContext={userContext} />
+          <PlaygroundView
+            onError={handleError}
+            onSuccess={handleSuccess}
+            userContext={userContext}
+          />
         </Layout>
       </div>
     </div>

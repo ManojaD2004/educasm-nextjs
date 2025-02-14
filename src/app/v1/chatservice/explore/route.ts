@@ -55,7 +55,7 @@ export async function POST(req: Request) {
     }
     chatHistory.unshift({ role: "system", content: systemPrompt });
     chatHistory.push({ role: "user", content: prompt });
-    console.log(chatHistory);
+    // console.log(chatHistory);
     const response = streamText({
       model: google("gemini-1.5-flash"),
       messages: chatHistory,

@@ -381,7 +381,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full h-[70dvh]">
+                    <div className="w-full min-h-[70dvh]">
                       <div className="flex-1 min-w-0">
                         {!message.content && isLoading ? (
                           <div className="flex items-center space-x-2 py-2">

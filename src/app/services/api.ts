@@ -70,9 +70,29 @@ export const api = {
           console.log(query, userContext);
           // console.log(messages);
           const chatHistory = messages.map((ele) => {
+            let relatedContext = "";
+            if (ele.type === "ai" && ele.questions && ele.topics) {
+              const relatedQuestions = ele.questions.map((ele1) => {
+                return {
+                  text: ele1.question,
+                  type: ele1.type,
+                  detail: ele1.context,
+                };
+              });
+              const relatedTopics = ele.topics.map((ele1) => {
+                return {
+                  name: ele1.topic,
+                  type: ele1.type,
+                  detail: ele1.reason,
+                };
+              });
+              relatedContext = `---\n{"topics": ${JSON.stringify(
+                relatedTopics
+              )},"questions":${JSON.stringify(relatedQuestions)}}`;
+            }
             const chat = {
               role: ele.type === "ai" ? "assistant" : "user",
-              content: ele.content || "",
+              content: ele.content + relatedContext || "",
             };
             return chat;
           });
@@ -140,7 +160,7 @@ export const api = {
                       }
                     });
                   }
-
+                  console.log(parsed);
                   // Send update with current state
                   onChunk({
                     text: mainContent.trim(),

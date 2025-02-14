@@ -15,25 +15,6 @@ export class GPTService {
     maxTokens?: number = 2000
   ) {
     try {
-      // {
-      //   const response = await this.openai.chat.completions.create({
-      //     model: "gpt-3.5-turbo",
-      //     messages: [
-      //       {
-      //         role: "system",
-      //         content: `${systemPrompt} Provide your response in JSON format.`,
-      //       },
-      //       {
-      //         role: "user",
-      //         content: userPrompt,
-      //       },
-      //     ],
-      //     temperature: 0.7,
-      //     max_tokens: maxTokens,
-      //     response_format: { type: "json_object" },
-      //   });
-      //   return response.choices[0].message?.content || "";
-      // }
       const model = this.gemini.getGenerativeModel({
         model: "gemini-1.5-flash",
       });

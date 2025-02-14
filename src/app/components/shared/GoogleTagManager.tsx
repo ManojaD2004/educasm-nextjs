@@ -7,6 +7,9 @@ export const GoogleTagManager = () => {
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    if (!pathname && !searchParams) {
+      return;
+    }
     // Push the new route to dataLayer
     if (window?.dataLayer) {
       window?.dataLayer.push({
@@ -14,7 +17,7 @@ export const GoogleTagManager = () => {
         page: pathname + searchParams.toString(),
       });
     }
-  }, [location]);
+  }, [pathname, searchParams]);
 
   return null;
 };

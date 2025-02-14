@@ -21,25 +21,6 @@ export class GPTService {
     maxTokens?: number = 2000
   ) {
     try {
-      // {
-      //   const response = await this.openai.chat.completions.create({
-      //     model: "gpt-3.5-turbo",
-      //     messages: [
-      //       {
-      //         role: "system",
-      //         content: `${systemPrompt} Provide your response in JSON format.`,
-      //       },
-      //       {
-      //         role: "user",
-      //         content: userPrompt,
-      //       },
-      //     ],
-      //     temperature: 0.7,
-      //     max_tokens: maxTokens,
-      //     response_format: { type: "json_object" },
-      //   });
-      //   return response.choices[0].message?.content || "";
-      // }
       const model = this.gemini.getGenerativeModel({
         model: "gemini-1.5-flash",
       });
@@ -51,12 +32,6 @@ export class GPTService {
               { text: `${systemPrompt} Provide your response in JSON format.` },
             ],
           },
-          // {
-          //   role: "model",
-          //   parts: [
-          //     { text: `OK I am ready for your queries.` },
-          //   ],
-          // },
         ],
         generationConfig: {
           temperature: 0.7,
@@ -546,26 +521,6 @@ export class GPTService {
 
   async exploreQuery(query: string): Promise<string> {
     try {
-      // {
-      //   const response = await this.openai.chat.completions.create({
-      //     model: "gpt-3.5-turbo",
-      //     messages: [
-      //       {
-      //         role: "system" as const,
-      //         content:
-      //           "You are a social media trend expert who explains topics by connecting them to current viral trends, memes, and pop culture moments.",
-      //       },
-      //       {
-      //         role: "user" as const,
-      //         content: this.buildPrompt(query),
-      //       },
-      //     ],
-      //     temperature: 0.9,
-      //     max_tokens: 4000,
-      //   });
-
-      //   return response.choices[0].message?.content || "";
-      // }
       const model = this.gemini.getGenerativeModel({
         model: "gemini-1.5-flash",
       });

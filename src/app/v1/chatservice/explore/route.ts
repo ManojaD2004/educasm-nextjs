@@ -11,7 +11,11 @@ const chatServiceSchema = z.object({
   }),
   chatHistory: z.array(
     z.object({
-      role: z.union([z.literal("assistant"), z.literal("user")]),
+      role: z.union([
+        z.literal("assistant"),
+        z.literal("user"),
+        z.literal("system"),
+      ]),
       content: z.string(),
     })
   ),
@@ -45,9 +49,13 @@ export async function POST(req: Request) {
       chatService.userContext
     );
     const chatHistory: MessageHistory[] = chatService.chatHistory;
+    let prompt = chatService.query;
+    if (chatHistory.length === 0) {
+      prompt = userPrompt;
+    }
     chatHistory.unshift({ role: "system", content: systemPrompt });
-    chatHistory.push({ role: "user", content: userPrompt });
-    // console.log(chatHistory);
+    chatHistory.push({ role: "user", content: prompt });
+    console.log(chatHistory);
     const response = streamText({
       model: google("gemini-1.5-flash"),
       messages: chatHistory,

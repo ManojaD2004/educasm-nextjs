@@ -5,17 +5,12 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { SearchBar } from "../shared/SearchBar";
-import {
-  MarkdownComponentProps,
-  Message
-} from "../../types";
+import { MarkdownComponentProps, Message } from "../../types";
 import { RelatedTopics } from "./RelatedTopics";
 import { RelatedQuestions } from "./RelatedQuestions";
 import { LoadingAnimation } from "../shared/LoadingAnimation";
 import { UserContext } from "../../types";
 import { useApi } from "@/app/hooks/useApi";
-
-
 
 interface StreamChunk {
   text?: string;
@@ -381,7 +376,15 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full min-h-[70dvh]">
+                    <div
+                      className="w-full"
+                      style={{
+                        height:
+                          index === messages.length - 1
+                            ? "90dvh"
+                            : "auto",
+                      }}
+                    >
                       <div className="flex-1 min-w-0">
                         {!message.content && isLoading ? (
                           <div className="flex items-center space-x-2 py-2">

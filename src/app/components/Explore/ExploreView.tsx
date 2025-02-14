@@ -221,13 +221,11 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
       console.log("In");
       return;
     }
-    console.log(recentQuestionRef.current);
-    console.log("In2");
     // recentQuestionRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
     const offset = 56;
     const elePos =
       recentQuestionRef.current.getBoundingClientRect().top + window.scrollY;
-    console.log(elePos - offset, window.scrollY);
+    // console.log(elePos - offset, window.scrollY);
     window.scrollTo({
       top: elePos - offset,
       behavior: "smooth",

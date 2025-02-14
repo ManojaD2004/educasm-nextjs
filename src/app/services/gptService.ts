@@ -14,7 +14,7 @@ export class GPTService {
   private async makeRequest(
     systemPrompt: string,
     userPrompt: string,
-    maxTokens?: number = 2000
+    maxTokens: number = 2000
   ) {
     try {
       const model = this.gemini.getGenerativeModel({
@@ -354,8 +354,8 @@ export class GPTService {
 
         let mainContent = "";
         let jsonContent = "";
-        let currentTopics: any[] = [];
-        let currentQuestions: any[] = [];
+        const currentTopics: any[] = [];
+        const currentQuestions: any[] = [];
         let isJsonSection = false;
 
         for await (const chunk of result.stream) {
@@ -451,10 +451,7 @@ export class GPTService {
     }
   }
 
-  streamExplorePrompts(
-    query: string,
-    userContext: UserContext
-  ) {
+  streamExplorePrompts(query: string, userContext: UserContext) {
     const systemPrompt = `You are a Gen-Z tutor who explains complex topics concisely for a ${userContext.age} year old.
           First provide the explanation in plain text, then provide related content in a STRICT single-line JSON format.
           

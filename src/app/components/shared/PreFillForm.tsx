@@ -54,7 +54,7 @@ export const PreFillForm: React.FC<PreFillFormProps> = ({ onSubmit }) => {
             Welcome to Educasm
           </h1>
           <p className="text-gray-400 text-sm sm:text-base">
-            Tap into Curiosity - Let's personalize your experience
+           {`Tap into Curiosity - Let's personalize your experience`}
           </p>
         </div>
 

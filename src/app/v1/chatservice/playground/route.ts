@@ -30,7 +30,6 @@ export async function POST(req: Request) {
       chatService.level,
       chatService.userContext
     );
-    console.log(chatService);
     return Response.json(
       { data: questions, error: null },
       { status: 200 }

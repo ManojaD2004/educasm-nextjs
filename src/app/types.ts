@@ -56,3 +56,10 @@ export interface MessgaeQuestion {
   type: string;
   context: string;
 }
+
+export interface Message {
+  type: "user" | "ai";
+  content?: string;
+  topics?: MessageTopic[];
+  questions?: MessgaeQuestion[];
+}

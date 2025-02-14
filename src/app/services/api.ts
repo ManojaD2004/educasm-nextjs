@@ -1,5 +1,12 @@
 // src/services/api.ts
-import { MessageTopic, MessgaeQuestion, Question, UserContext } from "../types";
+import {
+  Message,
+  MessageTopic,
+  MessgaeQuestion,
+  Question,
+  UserContext,
+} from "../types";
+import { GPTService } from "./gptService";
 
 const transformQuestion = (rawQuestion: Question): Question => ({
   text: rawQuestion.text,
@@ -40,6 +47,7 @@ export const api = {
     }
   },
   async streamExploreContent(
+    messages: Message[],
     query: string,
     userContext: UserContext,
     onChunk: (content: {
@@ -50,12 +58,20 @@ export const api = {
   ) {
     try {
       console.log(query, userContext);
+      // console.log(messages);
+      const chatHistory = messages.map((ele) => {
+        const chat = {
+          role: ele.type === "ai" ? "assistant" : "user",
+          content: ele.content || "",
+        };
+        return chat;
+      });
       const res = await fetch("/v1/chatservice/explore", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query, userContext }),
+        body: JSON.stringify({ query, userContext, chatHistory }),
       });
       const resReader = res.body?.getReader();
       if (!resReader) {

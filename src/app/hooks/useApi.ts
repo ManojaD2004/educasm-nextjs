@@ -1,6 +1,6 @@
 // src/hooks/useApi.ts
 import { useState } from "react";
-import { Question, UserContext } from "../types";
+import { Message, Question, UserContext } from "../types";
 import { api } from "../services/api";
 
 export const useApi = () => {
@@ -24,6 +24,7 @@ export const useApi = () => {
   };
 
   const streamExploreContent = async (
+    messages: Message[],
     query: string,
     userContext: UserContext,
     onChunk: (content: {
@@ -34,7 +35,7 @@ export const useApi = () => {
   ) => {
     try {
       setIsLoading(true);
-      await api.streamExploreContent(query, userContext, onChunk);
+      await api.streamExploreContent(messages, query, userContext, onChunk);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An error occurred";

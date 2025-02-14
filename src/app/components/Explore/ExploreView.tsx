@@ -7,8 +7,7 @@ import rehypeKatex from "rehype-katex";
 import { SearchBar } from "../shared/SearchBar";
 import {
   MarkdownComponentProps,
-  MessageTopic,
-  MessgaeQuestion,
+  Message
 } from "../../types";
 import { RelatedTopics } from "./RelatedTopics";
 import { RelatedQuestions } from "./RelatedQuestions";
@@ -16,12 +15,7 @@ import { LoadingAnimation } from "../shared/LoadingAnimation";
 import { UserContext } from "../../types";
 import { useApi } from "@/app/hooks/useApi";
 
-interface Message {
-  type: "user" | "ai";
-  content?: string;
-  topics?: MessageTopic[];
-  questions?: MessgaeQuestion[];
-}
+
 
 interface StreamChunk {
   text?: string;
@@ -205,7 +199,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
 
   // Add a ref for the messages container
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-
+  const recentQuestionRef = useRef<HTMLDivElement>(null);
   // More reliable scroll to top function
   const scrollToTop = useCallback(() => {
     // First try window scroll
@@ -221,13 +215,33 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
       window.scrollTo({ top: 0, behavior: "instant" });
     }, 100);
   }, []);
+  const scrollToRecentQuery = useCallback(() => {
+    // First try window scroll
+    if (!recentQuestionRef.current) {
+      console.log("In");
+      return;
+    }
+    console.log(recentQuestionRef.current);
+    console.log("In2");
+    // recentQuestionRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    const offset = 56;
+    const elePos =
+      recentQuestionRef.current.getBoundingClientRect().top + window.scrollY;
+    console.log(elePos - offset, window.scrollY);
+    window.scrollTo({
+      top: elePos - offset,
+      behavior: "smooth",
+    });
+  }, [recentQuestionRef.current, recentQuestionRef]);
 
   // Call scroll on any message change
   useEffect(() => {
-    if (messages.length > 0) {
+    if (messages.length > 2) {
+      scrollToRecentQuery();
+    } else {
       scrollToTop();
     }
-  }, [messages.length, scrollToTop]);
+  }, [messages.length, scrollToRecentQuery]);
 
   // Add effect to listen for reset
   useEffect(() => {
@@ -247,27 +261,31 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
           window.navigator.vibrate(50);
         }
 
-        // Scroll before starting the search
-        scrollToTop();
-
         setIsLoading(true);
+        const curInd = messages.length;
         setMessages([
+          ...messages,
           { type: "user", content: query },
           { type: "ai", content: "" },
         ]);
 
         setShowInitialSearch(false);
-        await streamExploreContent(query, userContext, (chunk: StreamChunk) => {
-          setMessages([
-            { type: "user", content: query },
-            {
+        await streamExploreContent(
+          messages,
+          query,
+          userContext,
+          (chunk: StreamChunk) => {
+            const newMessages = [...messages];
+            newMessages[curInd] = { type: "user", content: query };
+            newMessages[curInd + 1] = {
               type: "ai",
               content: chunk.text,
               topics: chunk.topics,
               questions: chunk.questions,
-            },
-          ]);
-        });
+            };
+            setMessages(newMessages);
+          }
+        );
       } catch (error) {
         console.error("Search error:", error);
         onError(
@@ -277,14 +295,11 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
         setIsLoading(false);
       }
     },
-    [onError, userContext, scrollToTop, streamExploreContent]
+    [onError, userContext, scrollToTop, messages, streamExploreContent]
   );
 
   const handleRelatedQueryClick = useCallback(
     (query: string) => {
-      // Scroll before handling the click
-      scrollToTop();
-
       if (onRelatedQueryClick) {
         onRelatedQueryClick(query);
       }
@@ -355,7 +370,11 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
         >
           <div className="space-y-2 pb-16">
             {messages.map((message, index) => (
-              <div key={index} className="px-2 sm:px-4 w-full mx-auto">
+              <div
+                ref={index === messages.length - 2 ? recentQuestionRef : null}
+                key={index}
+                className="px-2 sm:px-4 w-full mx-auto"
+              >
                 <div className="max-w-3xl mx-auto">
                   {message.type === "user" ? (
                     <div className="w-full">
@@ -364,7 +383,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full">
+                    <div className="w-full h-[70dvh]">
                       <div className="flex-1 min-w-0">
                         {!message.content && isLoading ? (
                           <div className="flex items-center space-x-2 py-2">

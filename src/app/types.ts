@@ -44,3 +44,15 @@ declare global {
     dataLayer: any[];
   }
 } 
+
+export interface MessageTopic {
+  topic: string;
+  type: string;
+  reason: string;
+}
+
+export interface MessgaeQuestion {
+  question: string;
+  type: string;
+  context: string;
+}

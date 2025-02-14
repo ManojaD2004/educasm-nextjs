@@ -23,8 +23,30 @@ export const useApi = () => {
     }
   };
 
+  const streamExploreContent = async (
+    query: string,
+    userContext: UserContext,
+    onChunk: (content: {
+      text?: string;
+      topics?: any[];
+      questions?: any[];
+    }) => void
+  ) => {
+    try {
+      setIsLoading(true);
+      await api.streamExploreContent(query, userContext, onChunk);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "An error occurred";
+      throw new Error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     isLoading,
     getQuestion,
+    streamExploreContent,
   };
 };

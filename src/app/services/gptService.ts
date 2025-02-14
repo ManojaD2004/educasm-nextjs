@@ -5,8 +5,10 @@ export class GPTService {
   private gemini: GoogleGenerativeAI;
 
   constructor() {
-    // console.log(process.env.GEMINI_API_KEY);
-    this.gemini = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "Need Api Key");
+    console.log(process.env.GEMINI_API_KEY);
+    this.gemini = new GoogleGenerativeAI(
+      process.env.GEMINI_API_KEY || "Need Api Key"
+    );
   }
 
   private async makeRequest(
@@ -262,7 +264,6 @@ export class GPTService {
   ): Promise<void> {
     const maxRetries = 3;
     let retryCount = 0;
-
     while (retryCount < maxRetries) {
       try {
         const systemPrompt = `You are a Gen-Z tutor who explains complex topics concisely for a ${userContext.age} year old.

@@ -6,8 +6,8 @@ import { PreFillForm } from "./components/shared/PreFillForm";
 import { UserContext } from "./types";
 import { Toaster, toast } from "react-hot-toast";
 import { GoogleTagManager } from "./components/shared/GoogleTagManager";
-import LoadGoogleAdsIframe from "./components/LoadGoogleAdsIframe";
-import LoadGoogleTagManager from "./components/LoadGoogleTagManager";
+import LoadGoogleAdsIframe from "./components/shared/LoadGoogleAdsIframe";
+import LoadGoogleTagManager from "./components/shared/LoadGoogleTagManager";
 
 export default function Home() {
   const [userContext, setUserContext] = useState<UserContext | null>(null);

@@ -90,6 +90,12 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
           masteryScore: 0,
         };
   });
+  const [playerStats, setPlayerStats] = useState({
+    maxStreak: 0,
+    totalTimeSpent: 0,
+    totalQuestionAnswered: 0,
+    totalCorrectAnswered: 0,
+  });
 
   const [nextQuestion, setNextQuestion] = useState<Question | null>(null);
   const [preloadedQuestion, setPreloadedQuestion] = useState<Question | null>(
@@ -265,6 +271,10 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
         levelRef.current--;
       }
     }
+    setNewPlayerStats(
+      index === currentQuestion.correctAnswer,
+      currentQuestionTime
+    );
     setSelectedAnswer(index);
     setShowExplanation(true);
     stopQuestionTimer();
@@ -272,6 +282,28 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
     fetchNewQuestion();
     startCountdown();
   };
+
+  function setNewPlayerStats(correct: boolean, timeTaken: number) {
+    const newPlayerStats = { ...playerStats };
+    newPlayerStats.totalQuestionAnswered++;
+    if (correct) {
+      newPlayerStats.totalCorrectAnswered++;
+    }
+    const newStreak = correct ? stats.streak + 1 : 0;
+    if (newStreak > newPlayerStats.maxStreak) {
+      newPlayerStats.maxStreak = newStreak;
+    }
+    newPlayerStats.totalTimeSpent += timeTaken;
+    setPlayerStats(newPlayerStats);
+    localStorage.setItem("playerStats", JSON.stringify(newPlayerStats));
+  }
+
+  useEffect(() => {
+    const playerStats = localStorage.getItem("playerStats");
+    if (playerStats) {
+      setPlayerStats(JSON.parse(playerStats));
+    }
+  }, []);
 
   useEffect(() => {
     if (query) {
@@ -335,11 +367,64 @@ export const PlaygroundView: React.FC<PlaygroundViewProps> = ({
       </div>
     );
   }
-
+  function calTotalAccuracy() {
+    console.log(playerStats);
+    if (playerStats.totalCorrectAnswered === 0) {
+      return 0;
+    }
+    const accuray = Math.round(
+      (playerStats.totalCorrectAnswered / playerStats.totalQuestionAnswered) *
+        100 * 100
+    ) / 100;
+    return accuray;
+  }
   return (
     <div className="w-full min-h-[calc(100vh-4rem)] flex flex-col">
       {!currentQuestion || sessionStats.isSessionComplete ? (
         <div className="flex-1 flex flex-col items-center justify-center px-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 pb-16 w-full">
+            <div className="card">
+              <div className="flex items-center gap-2 text-primary">
+                <Trophy className="w-5 h-5" />
+                <span className="text-sm font-medium">Accuracy</span>
+              </div>
+              <div className="mt-1 text-xl font-semibold">
+                {calTotalAccuracy()}%
+              </div>
+            </div>
+
+            <div className="card">
+              <div className="flex items-center justify-between">
+                <span className="stats-value text-xs sm:text-base text-primary">
+                  {playerStats.totalQuestionAnswered}
+                </span>
+                <Target className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+              </div>
+              <span className="stats-label text-xs sm:text-sm">
+                Total Questions Answered
+              </span>
+            </div>
+
+            <div className="card">
+              <div className="flex items-center justify-between">
+                <span className="stats-value text-yellow-500">
+                  {playerStats.maxStreak}
+                </span>
+                <Award className="w-5 h-5 text-yellow-500" />
+              </div>
+              <span className="stats-label">Max Streak</span>
+            </div>
+
+            <div className="card">
+              <div className="flex items-center justify-between">
+                <span className="stats-value text-purple-500">
+                  {playerStats.totalTimeSpent}s
+                </span>
+                <Timer className="w-5 h-5 text-purple-500" />
+              </div>
+              <span className="stats-label">Total Time Spent</span>
+            </div>
+          </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-center mb-4">
             What do you want to practice?
           </h1>
